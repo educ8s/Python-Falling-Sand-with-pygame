@@ -31,19 +31,17 @@ class SandParticle(Particle):
 		return int(r * 255), int(g * 255), int(b * 255)
 
 	def update(self, grid):
-		if grid.is_cell_empty(self.row + 1, self.column):
-			grid.move_particle(self.row, self.column, self.row + 1, self.column)
-			self.row += 1
-		else:
-			offsets = [-1, 1]
-			random.shuffle(offsets) 
-			for offset in [-1, 1]:  
-				new_column = self.column + offset
-				if (
-					grid.is_cell_empty(self.row + 1, new_column) and
-					isinstance(grid.get_particle(self.row + 1, self.column), SandParticle)
-				):
-					grid.move_particle(self.row, self.column, self.row + 1, new_column)
-					self.row += 1
-					self.column = new_column
-					break
+	    if grid.is_cell_empty(self.row + 1, self.column):
+	        grid.move_particle(self.row, self.column, self.row + 1, self.column)
+	        self.row += 1
+	    else:
+	        # Only try diagonal movement if blocked below
+	        offsets = [-1, 1]
+	        random.shuffle(offsets)
+	        for offset in offsets:
+	            new_column = self.column + offset
+	            if grid.is_cell_empty(self.row + 1, new_column):
+	                grid.move_particle(self.row, self.column, self.row + 1, new_column)
+	                self.row += 1
+	                self.column = new_column
+	                break

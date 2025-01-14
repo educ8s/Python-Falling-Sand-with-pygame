@@ -9,13 +9,9 @@ class Grid:
 		self.cell_size = cell_size
 		self.cells = [[None for _ in range(self.columns)] for _ in range(self.rows)]
 
-	def add_sand_particle(self, row, column):
+	def add_particle(self, row, column, particle_class):
 		if 0 <= row < self.rows and 0 <= column < self.columns and not self.cells[row][column]:
-			self.cells[row][column] = SandParticle(row, column)
-
-	def add_rock_particle(self, row, column):
-		if 0 <= row < self.rows and 0 <= column < self.columns and not self.cells[row][column]:
-			self.cells[row][column] = RockParticle(row, column)
+			self.cells[row][column] = particle_class(row, column)
 
 	def draw(self, window):
 		for row in range(self.rows):
@@ -29,11 +25,6 @@ class Grid:
 
 	def is_cell_empty(self, row, column):
 		return 0 <= row < self.rows and 0 <= column < self.columns and self.cells[row][column] is None
-
-	def get_particle(self, row, column):
-		if 0 <= row < self.rows and 0 <= column < self.columns:
-			return self.cells[row][column]
-		return None
 
 	def clear(self):
 		for row in range(self.rows):
