@@ -2,15 +2,13 @@ import random
 import colorsys
 
 class Particle:
-	def __init__(self, row, column):
-		self.row = row
-		self.column = column
+	def __init__(self):
 		self.color = self.random_color()
 
 	def random_color(self):
 		return (255, 255, 255)
 
-	def update(self, grid):
+	def update(self, grid, row, column):
 		pass
 
 class RockParticle(Particle):
@@ -30,18 +28,15 @@ class SandParticle(Particle):
 		r, g, b = colorsys.hsv_to_rgb(hue, saturation, value)
 		return int(r * 255), int(g * 255), int(b * 255)
 
-	def update(self, grid):
-	    if grid.is_cell_empty(self.row + 1, self.column):
-	        grid.move_particle(self.row, self.column, self.row + 1, self.column)
-	        self.row += 1
-	    else:
-	        # Only try diagonal movement if blocked below
-	        offsets = [-1, 1]
-	        random.shuffle(offsets)
-	        for offset in offsets:
-	            new_column = self.column + offset
-	            if grid.is_cell_empty(self.row + 1, new_column):
-	                grid.move_particle(self.row, self.column, self.row + 1, new_column)
-	                self.row += 1
-	                self.column = new_column
-	                break
+	def update(self, grid, row, column):
+		if grid.is_cell_empty(row + 1, column):
+			grid.move_particle(row, column, row + 1, column)
+		else:
+			# Only try diagonal movement if blocked below
+			offsets = [-1, 1]
+			random.shuffle(offsets)
+			for offset in offsets:
+				new_column = column + offset
+				if grid.is_cell_empty(row + 1, new_column):
+					grid.move_particle(row, column, row + 1, new_column)
+					break

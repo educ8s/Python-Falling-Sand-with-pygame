@@ -11,7 +11,7 @@ class Grid:
 
 	def add_particle(self, row, column, particle_class):
 		if 0 <= row < self.rows and 0 <= column < self.columns and not self.cells[row][column]:
-			self.cells[row][column] = particle_class(row, column)
+			self.cells[row][column] = particle_class()
 
 	def draw(self, window):
 		for row in range(self.rows):

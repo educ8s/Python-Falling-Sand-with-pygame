@@ -18,7 +18,7 @@ class Simulation:
 			for column in range(self.grid.columns):
 				particle = self.grid.cells[row][column]
 				if particle:
-					particle.update(self.grid)
+					particle.update(self.grid, row, column)
 
 	def remove_particle(self, row, column):
 		self.grid.remove_particle(row, column)

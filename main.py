@@ -2,11 +2,11 @@ import pygame, sys
 from simulation import Simulation
 
 WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_HEIGHT = 800
 CELL_SIZE = 4
 GREY =  (50, 50, 50)
 
-FPS = 120
+FPS = 200
 pygame.init()
 pygame.mouse.set_visible(False)
 
