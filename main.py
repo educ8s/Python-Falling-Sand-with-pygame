@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame
 from simulation import Simulation
 
 GREY = (29, 29, 29)

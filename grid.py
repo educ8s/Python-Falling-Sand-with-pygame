@@ -1,6 +1,4 @@
 import pygame
-from particle import SandParticle
-from particle import RockParticle
 
 class Grid:
 	def __init__(self, width, height, cell_size):
@@ -10,7 +8,6 @@ class Grid:
 		self.cells = [[None for _ in range(self.columns)] for _ in range(self.rows)]
 	
 	def draw(self, window):
-
 		for row in range(self.rows): 
 			for column in range(self.columns):
 				particle = self.cells[row][column]

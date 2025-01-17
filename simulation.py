@@ -14,21 +14,18 @@ class Simulation:
 		self.grid.draw(window)
 		self.draw_brush(window)
 
-
 	def add_particle(self, row, column):
 	    if self.mode == "sand":
-	        # 50% chance to add a sand particle
-	        if random.random() < 0.2:  # 50% probability
+	        if random.random() < 0.2:
 	            particle = SandParticle
 	            self.grid.add_particle(row, column, particle)
 	    elif self.mode == "rock":
-	        # Always add a rock particle
 	        particle = RockParticle
 	        self.grid.add_particle(row, column, particle)
 
 	def update(self):
 		orientation = random.randint(0, 1)	
-		for row in range(self.grid.rows - 1, -1, -1):  # Start from the bottom		
+		for row in range(self.grid.rows - 1, -1, -1):
 			if orientation == 0:
 				for column in range(self.grid.columns - 1, -1, -1):
 					self.process_particle(row, column)
@@ -92,11 +89,9 @@ class Simulation:
 					self.add_particle(current_row, current_col)
 
 	def draw_brush(self, window):
-
 		mouse_pos = pygame.mouse.get_pos()
 		column = mouse_pos[0] // self.cell_size
 		row = mouse_pos[1] // self.cell_size
-		
 		cursor_size = self.brush_size * self.cell_size
 		color = (255, 255, 255)
 
@@ -107,8 +102,4 @@ class Simulation:
 		elif self.mode == "erase":
 			color = (255, 105, 180) 
 
-		pygame.draw.rect(
-			window,
-			color,
-			(column * self.cell_size, row * self.cell_size, cursor_size, cursor_size),
-		)
+		pygame.draw.rect(window, color, (column * self.cell_size, row * self.cell_size, cursor_size, cursor_size))
