@@ -1,69 +1,114 @@
-import random, math, pygame
+import pygame, sys, random
 from grid import Grid
-from sand import SandParticle, RockParticle
+from particle import SandParticle
+from particle import RockParticle
 
 class Simulation:
 	def __init__(self, width, height, cell_size):
-		self.current_mode = "sand"
+		self.cell_size = cell_size
 		self.grid = Grid(width, height, cell_size)
+		self.mode = "sand"
+		self.brush_size = 3
 
-	def set_current_mode(self, mode_type):
-		if mode_type in ["sand", "rock", "eraser"]:
-			self.current_mode = mode_type
-		else:
-			raise ValueError(f"Invalid mode: {mode_type}")
+	def draw(self, window):
+		self.grid.draw(window)
+		self.draw_brush(window)
+
+
+	def add_particle(self, row, column):
+	    if self.mode == "sand":
+	        # 50% chance to add a sand particle
+	        if random.random() < 0.2:  # 50% probability
+	            particle = SandParticle
+	            self.grid.add_particle(row, column, particle)
+	    elif self.mode == "rock":
+	        # Always add a rock particle
+	        particle = RockParticle
+	        self.grid.add_particle(row, column, particle)
 
 	def update(self):
-		for row in range(self.grid.rows - 1, -1, -1):
-			for column in range(self.grid.columns):
-				particle = self.grid.cells[row][column]
-				if particle:
-					particle.update(self.grid, row, column)
+		orientation = random.randint(0, 1)	
+		for row in range(self.grid.rows - 1, -1, -1):  # Start from the bottom		
+			if orientation == 0:
+				for column in range(self.grid.columns - 1, -1, -1):
+					self.process_particle(row, column)
+			else:
+				for column in range(self.grid.columns):
+					self.process_particle(row, column)
 
-	def remove_particle(self, row, column):
-		self.grid.remove_particle(row, column)
-
-	def draw(self, window, row, column):
-		self.grid.draw(window)
-		self.draw_cursor(window, row, column)
+	def process_particle(self, row, column):
+		particle = self.grid.cells[row][column]
+		if isinstance(particle, SandParticle):
+			new_pos = particle.update(self.grid, row, column)
+			if new_pos != (row, column):
+				self.grid.set_cell(new_pos[0], new_pos[1], particle)
+				self.grid.set_cell(row, column, None)
 
 	def restart(self):
 		self.grid.clear()
 
-	def add_particle(self, row, column):
-		if self.current_mode == "sand":
-			self.grid.add_particle(row, column, SandParticle)
-		elif self.current_mode == "rock":
-			self.grid.add_particle(row, column, RockParticle)
+	def handle_controls(self):
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				sys.exit()
 
-	def add_particles_square(self, row, column, size, probability):
-		for row_offset in range(size):
-			for col_offset in range(size):
-				if random.random() < probability:
-					self.add_particle(row + row_offset, column + col_offset)
-
-	def erase(self, row, column, size):
-		for row_offset in range(size):
-			for col_offset in range(size):
-				self.remove_particle(row + row_offset, column + col_offset)
-
-	def draw_cursor(self, window, row, column):
+			if event.type == pygame.KEYDOWN:
+				self.handle_key(event)
 		
-		cursor_size = 4 * self.grid.cell_size
+		self.handle_mouse()
+
+	def handle_key(self, event):
+		if event.type == pygame.KEYDOWN:
+			if event.key == pygame.K_SPACE:
+				self.restart()
+			elif event.key == pygame.K_s:
+				self.mode = "sand"
+				print("Sand Mode")
+			elif event.key == pygame.K_r:
+				self.mode = "rock"
+				print("Rock Mode")
+			elif event.key == pygame.K_e:
+				self.mode = "erase"
+				print("Eraser Mode")
+
+	def handle_mouse(self):
+		buttons = pygame.mouse.get_pressed()
+		if buttons[0]:
+			pos = pygame.mouse.get_pos()
+			row = pos[1] // self.cell_size
+			column = pos[0] // self.cell_size
+			self.apply_brush(row, column)
+
+	def apply_brush(self, row, column):
+		for r in range(self.brush_size):
+			for c in range(self.brush_size):
+				current_row = row + r
+				current_col = column + c
+
+				if self.mode == "erase":
+					self.grid.remove_particle(current_row, current_col)
+				else:
+					self.add_particle(current_row, current_col)
+
+	def draw_brush(self, window):
+
+		mouse_pos = pygame.mouse.get_pos()
+		column = mouse_pos[0] // self.cell_size
+		row = mouse_pos[1] // self.cell_size
+		
+		cursor_size = self.brush_size * self.cell_size
 		color = (255, 255, 255)
 
-		if self.current_mode == "rock":
+		if self.mode == "rock":
 			color = (100, 100, 100) 
-			cursor_size = 2 * self.grid.cell_size
-		elif self.current_mode == "sand":
-			color = (210, 180, 140)  
-			cursor_size = 4 * self.grid.cell_size
-		elif self.current_mode == "eraser":
+		elif self.mode == "sand":
+			color = (185, 142, 66)  
+		elif self.mode == "erase":
 			color = (255, 105, 180) 
-			cursor_size = 4 * self.grid.cell_size
 
 		pygame.draw.rect(
 			window,
 			color,
-			(column * self.grid.cell_size, row * self.grid.cell_size, cursor_size, cursor_size),
+			(column * self.cell_size, row * self.cell_size, cursor_size, cursor_size),
 		)
