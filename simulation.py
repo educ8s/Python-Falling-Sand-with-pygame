@@ -25,7 +25,7 @@ class Simulation:
 
 	def update(self):
 		orientation = random.randint(0, 1)	
-		for row in range(self.grid.rows - 1, -1, -1):
+		for row in range(self.grid.rows - 1, -1, -1):  # Start from the bottom		
 			if orientation == 0:
 				for column in range(self.grid.columns - 1, -1, -1):
 					self.process_particle(row, column)
@@ -34,7 +34,7 @@ class Simulation:
 					self.process_particle(row, column)
 
 	def process_particle(self, row, column):
-		particle = self.grid.cells[row][column]
+		particle = self.grid.get_cell(row, column)
 		if isinstance(particle, SandParticle):
 			new_pos = particle.update(self.grid, row, column)
 			if new_pos != (row, column):
@@ -43,6 +43,9 @@ class Simulation:
 
 	def restart(self):
 		self.grid.clear()
+
+	def remove_particle(self, row, column):
+		self.grid.remove_particle(row, column)
 
 	def handle_controls(self):
 		for event in pygame.event.get():
@@ -61,13 +64,10 @@ class Simulation:
 				self.restart()
 			elif event.key == pygame.K_s:
 				self.mode = "sand"
-				print("Sand Mode")
 			elif event.key == pygame.K_r:
 				self.mode = "rock"
-				print("Rock Mode")
 			elif event.key == pygame.K_e:
 				self.mode = "erase"
-				print("Eraser Mode")
 
 	def handle_mouse(self):
 		buttons = pygame.mouse.get_pressed()
@@ -89,9 +89,11 @@ class Simulation:
 					self.add_particle(current_row, current_col)
 
 	def draw_brush(self, window):
+
 		mouse_pos = pygame.mouse.get_pos()
 		column = mouse_pos[0] // self.cell_size
 		row = mouse_pos[1] // self.cell_size
+		
 		cursor_size = self.brush_size * self.cell_size
 		color = (255, 255, 255)
 
@@ -102,4 +104,8 @@ class Simulation:
 		elif self.mode == "erase":
 			color = (255, 105, 180) 
 
-		pygame.draw.rect(window, color, (column * self.cell_size, row * self.cell_size, cursor_size, cursor_size))
+		pygame.draw.rect(
+			window,
+			color,
+			(column * self.cell_size, row * self.cell_size, cursor_size, cursor_size),
+		)

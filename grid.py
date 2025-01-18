@@ -1,4 +1,6 @@
 import pygame
+from particle import SandParticle
+from particle import RockParticle
 
 class Grid:
 	def __init__(self, width, height, cell_size):
@@ -36,4 +38,10 @@ class Grid:
 
 	def remove_particle(self, row, column):
 		if 0 <= row < self.rows and 0 <= column < self.columns:
-			self.cells[row][column] = None 
+			self.cells[row][column] = None
+
+	def get_cell(self, row, column):
+	    if 0 <= row < self.rows and 0 <= column < self.columns:
+	        return self.cells[row][column]  # Return the cell content
+	    return None
+ 

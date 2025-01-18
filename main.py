@@ -1,5 +1,6 @@
-import pygame
+import pygame, sys
 from simulation import Simulation
+from particle import SandParticle
 
 GREY = (29, 29, 29)
 WINDOW_WIDTH = 800
