@@ -77,14 +77,3 @@ This project is divided into 10 steps:
 
 - Python 3.x
 - Pygame (Community Edition recommended for better performance)
-
-## Contributing
-
-Contributions are welcome! If you have ideas for new features or improvements, feel free to open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-Enjoy building your Falling Sand Simulation and don't forget to share your project! 🚀
-
