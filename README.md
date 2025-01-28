@@ -42,7 +42,7 @@ In this tutorial, we build an interactive Falling Sand Simulation from scratch. 
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/educ8s/falling-sand-simulation.git
+   git clone https://github.com/educ8s/Python-Falling-Sand-with-pygame.git
    cd falling-sand-simulation
    ```
 
